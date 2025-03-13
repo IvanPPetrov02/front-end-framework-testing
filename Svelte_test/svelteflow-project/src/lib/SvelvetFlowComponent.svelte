@@ -1,92 +1,126 @@
 <script lang="ts">
-                            import { writable } from 'svelte/store';
-                            import { Svelvet } from 'svelvet';
+    import { Svelvet, Node, Edge } from "svelvet";
+    import { onMount } from 'svelte';
 
-                            interface SvelvetNode {
-                                id: string;
-                                label: string;  // Changed from text to label
-                                data?: string;
-                                x: number;      // Using x, y directly
-                                y: number
-                            }
+    // Define initial nodes
+    let nodes = [
+        {
+            id: "1",
+            position: { x: 250, y: 100 },
+            data: { label: "Node 1" }
+        },
+        {
+            id: "2",
+            position: { x: 100, y: 250 },
+            data: { label: "Node 2" }
+        },
+        {
+            id: "3",
+            position: { x: 400, y: 250 },
+            data: { label: "Node 3" }
+        },
+        {
+            id: "4",
+            position: { x: 250, y: 400 },
+            data: { label: "Node 4" }
+        }
+    ];
 
-                            export let sharedNodes: { id: string; label: string; variable: string; }[] = [];
-                            let nodeId = 5;
+    // Define edges connecting the nodes
+    let edges = [
+        { 
+            id: "e1-2", 
+            source: "1", 
+            target: "2", 
+            animated: true 
+        },
+        { 
+            id: "e1-3", 
+            source: "1", 
+            target: "3" 
+        },
+        { 
+            id: "e2-4", 
+            source: "2", 
+            target: "4" 
+        },
+        { 
+            id: "e3-4", 
+            source: "3", 
+            target: "4", 
+            animated: true 
+        }
+    ];
 
-                            // Initialize nodes with correct Svelvet format
-                            const nodesStore = writable<SvelvetNode[]>(
-                                sharedNodes.map((node, index) => ({
-                                    id: node.id,
-                                    label: node.label,
-                                    data: node.variable,
-                                    x: 200,
-                                    y: 100 + index * 120
-                                }))
-                            );
+    // Node counter for adding new nodes
+    let nodeId = 5;
 
-                            // Initialize edges
-                            const edgesStore = writable([
-                                { id: 'e1-2', start: '1', end: '2' },  // Using start/end instead of source/target
-                                { id: 'e2-3', start: '2', end: '3' },
-                                { id: 'e3-4', start: '3', end: '4' }
-                            ]);
+    function addNode() {
+        const newNode = {
+            id: String(nodeId),
+            position: { x: 100 + Math.random() * 400, y: 100 + Math.random() * 400 },
+            data: { label: `Node ${nodeId}` }
+        };
+        
+        nodes = [...nodes, newNode];
+        nodeId++;
+    }
 
-                            function addNewNode() {
-                                nodesStore.update(nodes => [
-                                    ...nodes,
-                                    {
-                                        id: `${nodeId}`,
-                                        label: `Node ${nodeId}`,
-                                        data: `var${nodeId}`,
-                                        x: 200,
-                                        y: 100 + nodeId * 100
-                                    }
-                                ]);
-                                nodeId++;
-                            }
+    onMount(() => {
+        console.log("Component mounted");
+    });
+</script>
 
-                            function addTransferNode() {
-                                nodesStore.update(nodes => [
-                                    ...nodes,
-                                    {
-                                        id: `${nodeId}`,
-                                        label: 'Transfer',
-                                        data: `amount${nodeId}`,
-                                        x: 200,
-                                        y: 100 + nodeId * 100
-                                    }
-                                ]);
-                                nodeId++;
-                            }
-                        </script>
+<div class="flow-wrapper">
+    <div class="button-container">
+        <button on:click={addNode}>Add Node</button>
+    </div>
 
-                        <div class="button-container">
-                            <button on:click={addNewNode}>Add Node</button>
-                            <button on:click={addTransferNode}>Add Transfer</button>
-                        </div>
+    <div class="flow-container">
+        <Svelvet 
+            {nodes} 
+            {edges}
+            nodesDraggable={true}
+            pannable={true}
+            zoomable={true}
+            snapToGrid={true}
+            edgesUpdatable={true}
+            width="100%"
+            height="600px"
+        />
+    </div>
+</div>
 
-                        <div style="height: 600px; border: 1px solid #ddd; border-radius: 5px;">
-                            <Svelvet nodes={$nodesStore} connections={$edgesStore} />
-                        </div>
+<style>
+    .flow-wrapper {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
 
-                        <style>
-                            .button-container {
-                                display: flex;
-                                gap: 10px;
-                                margin-bottom: 10px;
-                            }
+    .button-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
 
-                            button {
-                                padding: 8px 12px;
-                                background-color: #007bff;
-                                color: white;
-                                border: none;
-                                border-radius: 4px;
-                                cursor: pointer;
-                                font-size: 14px;
-                            }
+    .flow-container {
+        height: 600px;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+    }
 
-                            button:hover {
-                                background-color: #0056b3;
-                            }
-                        </style>
+    button {
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>

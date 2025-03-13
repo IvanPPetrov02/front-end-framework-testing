@@ -16,11 +16,11 @@
 
   // Feature comparison data
   const features = [
-    { feature: 'Custom nodes', svelteflow: '✓ Fully customizable', svelvet: '✓ Basic customization' },
-    { feature: 'Edge styling', svelteflow: '✓ Multiple edge types', svelvet: '✓ Simple connections' },
-    { feature: 'Performance', svelteflow: '✓ Better with large graphs', svelvet: '✓ Good for simpler workflows' },
-    { feature: 'Learning curve', svelteflow: 'Steeper but more powerful', svelvet: 'Simpler to get started' },
-    { feature: 'Documentation', svelteflow: 'Extensive', svelvet: 'Basic' }
+    { feature: 'Custom nodes', svelteflow: '✓ Fully customizable', svelvet: '' },
+    { feature: 'Edge styling', svelteflow: '✓ Multiple edge types', svelvet: '' },
+    { feature: 'Performance', svelteflow: '✓ Better with large graphs', svelvet: '' },
+    { feature: 'Learning curve', svelteflow: 'Steeper but more powerful', svelvet: '' },
+    { feature: 'Documentation', svelteflow: 'Extensive', svelvet: '' }
   ];
 </script>
 
