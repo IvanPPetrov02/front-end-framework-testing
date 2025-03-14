@@ -24,6 +24,17 @@ const { data } = toRefs(props);
   text-align: center;
   min-width: 140px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+  position: relative;
+  transform-origin: center center;
+  transform: scale(1); /* Will allow node to scale properly */
+}
+
+.custom-node strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #2c3e50;
 }
 
 .custom-node input {
@@ -33,12 +44,22 @@ const { data } = toRefs(props);
   text-align: center;
   border: 1px solid #aaa;
   border-radius: 4px;
+  font-size: 14px;
 }
 
 .handle {
-  width: 10px;
-  height: 10px;
-  background: #555;
+  width: 12px;
+  height: 12px;
+  background: #42b883;
+  border: 2px solid white;
   border-radius: 50%;
+  z-index: 30;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Add hover effect to handles to make them easier to use */
+.handle:hover {
+  transform: scale(1.5);
+  cursor: crosshair;
 }
 </style>
