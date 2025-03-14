@@ -3,16 +3,16 @@
   import SvelvetFlowComponent from "./lib/SvelvetFlowComponent.svelte";
   import { writable } from 'svelte/store';
 
-  // Shared workflow data for comparison
+  // Shared workflow data for comparison - simplified for compatibility
   const sharedNodes = [
     { id: '1', label: 'Input', variable: 'transaction' },
-    { id: '2', label: 'Transfer', variable: 'amount' },
-    { id: '3', label: 'Swap', variable: 'tokens' },
+    { id: '2', label: 'Process', variable: 'calculation' },
+    { id: '3', label: 'Transform', variable: 'conversion' },
     { id: '4', label: 'Output', variable: 'result' }
   ];
 
   // Create active tab state
-  let activeTab = 'features';
+  let activeTab = 'demo'; // Starting with demo for easier testing
 
   // Feature comparison data
   const features = [
@@ -25,7 +25,7 @@
 </script>
 
 <main>
-  <h1>SvelteFlow vs Svelvet Comparison</h1>
+  <h1>Flow Library Comparison</h1>
 
   <div class="tab-container">
     <button class={activeTab === 'features' ? 'active' : ''} on:click={() => activeTab = 'features'}>
@@ -61,13 +61,13 @@
     <div class="workflow-container">
       <div class="workflow">
         <h2>SvelteFlow</h2>
-        <p>Based on React Flow, more powerful with full customization</p>
+        <p>Rich features with full customization</p>
         <SvelteFlowComponent {sharedNodes} />
       </div>
 
       <div class="workflow">
         <h2>Svelvet</h2>
-        <p>Svelte-native, simpler API with good defaults</p>
+        <p>Simple Svelte-native flow diagrams</p>
         <SvelvetFlowComponent {sharedNodes} />
       </div>
     </div>

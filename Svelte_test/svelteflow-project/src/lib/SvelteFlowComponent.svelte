@@ -5,7 +5,6 @@
         Controls,
         MiniMap,
         Background,
-        Panel,
         type Node,
         type Edge,
         MarkerType,
@@ -151,11 +150,7 @@
             {#if showMiniMap}
                 <MiniMap nodeStrokeWidth={3} zoomable pannable />
             {/if}
-            <Panel position="bottom-center">
-                <div class="info-box">
-                    <strong>SvelteFlow Features:</strong> Custom node styles, multiple edge types, animations
-                </div>
-            </Panel>
+            <!-- Panel component removed -->
         </SvelteFlow>
     </div>
 </div>

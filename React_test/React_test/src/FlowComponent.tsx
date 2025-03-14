@@ -8,6 +8,7 @@ import ReactFlow, {
     MarkerType,
     Handle,
     Position,
+    Panel,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -37,25 +38,55 @@ const initialEdges = []; // No default connections
 // Custom Node Component
 const CustomNode = ({ data }) => {
     const [variable, setVariable] = useState(data.variable);
+    
+    // Determine node color based on label
+    const getNodeStyles = () => {
+        switch(data.label) {
+            case 'Move':
+                return {
+                    background: '#ebf8ff',
+                    border: '2px solid #3182ce',
+                    boxShadow: '0 4px 6px rgba(49, 130, 206, 0.3)'
+                };
+            case 'Transfer':
+                return {
+                    background: '#edfaef',
+                    border: '2px solid #38a169',
+                    boxShadow: '0 4px 6px rgba(56, 161, 105, 0.3)'
+                };
+            case 'Swap':
+                return {
+                    background: '#fff5f5',
+                    border: '2px solid #e53e3e',
+                    boxShadow: '0 4px 6px rgba(229, 62, 62, 0.3)'
+                };
+            default:
+                return {
+                    background: '#fff',
+                    border: '2px solid #333',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                };
+        }
+    };
+
+    const nodeStyle = getNodeStyles();
 
     return (
         <div
             style={{
-                width: 140,
-                height: 100,
-                padding: 10,
-                background: "#fff",
-                border: "2px solid #333",
-                borderRadius: 10,
+                width: 160,
+                height: 120,
+                padding: 12,
+                borderRadius: 12,
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
+                ...nodeStyle
             }}
         >
-            {/* Connection Points (Handles) - Center Left & Center Right */}
             <Handle
                 type="target"
                 position={Position.Left}
@@ -79,7 +110,12 @@ const CustomNode = ({ data }) => {
                 }}
             />
 
-            <strong style={{ fontSize: "14px", color: "#007bff", marginBottom: "5px" }}>
+            <strong style={{ 
+                fontSize: "16px", 
+                color: "#2c5282", 
+                marginBottom: "8px",
+                fontWeight: "600"
+            }}>
                 {data.label}
             </strong>
 
@@ -91,10 +127,13 @@ const CustomNode = ({ data }) => {
                 style={{
                     width: "90%",
                     textAlign: "center",
-                    border: "1px solid #aaa",
-                    borderRadius: 4,
-                    padding: 5,
+                    border: "1px solid #cbd5e0",
+                    borderRadius: 6,
+                    padding: 8,
+                    fontSize: "14px",
+                    backgroundColor: "rgba(255, 255, 255, 0.8)"
                 }}
+                className="focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
             />
         </div>
     );
@@ -108,12 +147,12 @@ const FlowComponent = () => {
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const [nodeId, setNodeId] = useState(4); // Start at 4 since we already have 3 nodes
 
-    // Function to add a new "Transfer" node
-    const addTransferNode = () => {
+    // Function to add new nodes
+    const addNode = (type) => {
         const newNode = {
             id: `${nodeId}`,
             position: { x: 200, y: nodeId * 100 },
-            data: { label: "Transfer", variable: `var${nodeId}` },
+            data: { label: type, variable: `${type.toLowerCase().charAt(0)}${nodeId}` },
             type: "customNode",
         };
 
@@ -161,39 +200,68 @@ const FlowComponent = () => {
     );
 
     return (
-        <div>
-            {/* Button to Add New "Transfer" Nodes */}
-            <button
-                onClick={addTransferNode}
-                style={{
-                    marginBottom: "10px",
-                    padding: "10px 15px",
-                    fontSize: "16px",
-                    backgroundColor: "#28a745",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                }}
-            >
-                Add Transfer Node
-            </button>
+        <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg shadow-md">
+            <div className="flex space-x-4 mb-6">
+                <button
+                    onClick={() => addNode("Move")}
+                    className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all"
+                >
+                    Add Move Node
+                </button>
+                <button
+                    onClick={() => addNode("Transfer")}
+                    className="px-4 py-2 bg-green-600 text-white font-medium rounded-lg shadow-md hover:bg-green-700 transition-all"
+                >
+                    Add Transfer Node
+                </button>
+                <button
+                    onClick={() => addNode("Swap")}
+                    className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg shadow-md hover:bg-red-700 transition-all"
+                >
+                    Add Swap Node
+                </button>
+            </div>
 
-            <div style={{ width: "100%", height: "500px", border: "1px solid #ddd" }}>
+            <div style={{ 
+                width: "100%", 
+                height: "650px", 
+                border: "1px solid #e2e8f0",
+                borderRadius: "12px",
+                overflow: "hidden",
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+            }}>
                 <ReactFlow
                     nodes={nodes}
                     edges={edges}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
                     onConnect={onConnect}
-                    onEdgeDoubleClick={onEdgeDoubleClick} // Double-click to remove edge
-                    onNodeDoubleClick={onNodeDoubleClick} // Double-click to remove node
+                    onEdgeDoubleClick={onEdgeDoubleClick}
+                    onNodeDoubleClick={onNodeDoubleClick}
                     fitView
                     nodeTypes={nodeTypes}
-                    proOptions={{ hideAttribution: true }} // Hides React Flow watermark
+                    proOptions={{ hideAttribution: true }}
                 >
-                    <Background />
-                    <Controls showZoom={true} showFitView={true} showInteractive={false} />
+                    <Background 
+                        variant="dots" 
+                        gap={16} 
+                        size={1.5} 
+                        color="#9CA3AF"
+                    />
+                    <Controls 
+                        showZoom={true} 
+                        showFitView={true} 
+                        showInteractive={false}
+                        style={{
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                        }}
+                    />
+                    <Panel position="bottom-right">
+                        <div className="bg-white p-3 rounded-lg shadow text-sm">
+                            <p className="text-gray-600">Double-click to delete nodes and edges</p>
+                        </div>
+                    </Panel>
                 </ReactFlow>
             </div>
         </div>
